@@ -2,6 +2,9 @@ name: Scheduler
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      WORKFLOW_PUSH_TOKEN:
+        required: true
 
 jobs:
   reprogram-messenger:
