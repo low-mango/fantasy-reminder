@@ -18,6 +18,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python Messenger.py
 
-  # reschedule:
-  #   needs: send-alert
-  #   uses: ./.github/workflows/scheduler.yml
+  reschedule:
+    needs: send-alert
+    permissions:
+      contents: write
+    uses: ./.github/workflows/scheduler.yml
