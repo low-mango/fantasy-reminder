@@ -23,3 +23,5 @@ jobs:
     permissions:
       contents: write
     uses: ./.github/workflows/scheduler.yml
+    secrets:
+      WORKFLOW_PUSH_TOKEN: ${{ secrets.WORKFLOW_PUSH_TOKEN }}
