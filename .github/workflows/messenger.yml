@@ -1,0 +1,22 @@
+name: Telegram Messenger
+on:
+  schedule:
+    - cron: '0 0 1 1 *' # DYNAMIC_SCHEDULE (Scheduler will overwrite this)
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Telegram Script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python Messenger.py
+
+  reschedule:
+    needs: send-alert
+    uses: ./.github/workflows/scheduler.yml

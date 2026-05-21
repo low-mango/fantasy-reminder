@@ -1,0 +1,24 @@
+name: Scheduler
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  reprogram-messenger:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Scheduler
+        run: python Scheduler.py
+      - name: Commit Update
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/messenger.yml
+          git commit -m "Scheduler: Rescheduled messenger for next gameweek" || exit 0
+          git push
