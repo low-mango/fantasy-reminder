@@ -2,6 +2,7 @@ name: Telegram Messenger
 on:
   schedule:
     - cron: '0 0 1 1 *' # DYNAMIC_SCHEDULE (Scheduler will overwrite this)
+  workflow_dispatch:
 
 jobs:
   send-alert:
