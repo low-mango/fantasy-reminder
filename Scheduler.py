@@ -3,6 +3,11 @@ import sys
 from datetime import datetime, timezone, timedelta
 
 import requests
+from dotenv import load_dotenv
+
+from Messenger import send_telegram_message
+
+load_dotenv()
 
 REQUEST_TIMEOUT = 30
 
@@ -59,11 +64,22 @@ def update_messenger_workflow(deadline_dt):
     with open(path, "w") as f:
         f.write(updated_content)
 
+
+def reschedule_and_notify(deadline_dt):
+    reminder = deadline_dt - timedelta(hours=3)
+    update_messenger_workflow(deadline_dt)
+    print(f"Rescheduled for: {reminder}")
+    when = reminder.strftime("%Y-%m-%d %H:%M UTC")
+    send_telegram_message(
+        f"✅ FPL reminder re-scheduled for {when} "
+        f"(3 hours before the next deadline)."
+    )
+
+
 if __name__ == "__main__":
     next_dt = get_next_deadline()
     if next_dt:
-        update_messenger_workflow(next_dt)
-        print(f"Rescheduled for: {next_dt - timedelta(hours=3)}")
+        reschedule_and_notify(next_dt)
     else:
         print("No upcoming reminder to schedule.")
         sys.exit(1)

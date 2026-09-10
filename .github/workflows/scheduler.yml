@@ -5,6 +5,10 @@ on:
     secrets:
       WORKFLOW_PUSH_TOKEN:
         required: true
+      TELEGRAM_TOKEN:
+        required: true
+      TELEGRAM_CHAT_ID:
+        required: true
 
 jobs:
   reprogram-messenger:
@@ -19,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Scheduler
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python Scheduler.py
       - name: Commit Update
         run: |
