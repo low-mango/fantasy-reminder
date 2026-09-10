@@ -115,3 +115,18 @@ def test_update_messenger_workflow_missing_cron_line(capsys):
 
     assert exc_info.value.code == 1
     assert "DYNAMIC_SCHEDULE cron line not found" in capsys.readouterr().out
+
+
+@patch("Scheduler.send_telegram_message")
+@patch("Scheduler.update_messenger_workflow")
+def test_reschedule_and_notify_sends_telegram(mock_update, mock_send, capsys):
+    deadline = datetime(2026, 5, 21, 18, 30, tzinfo=timezone.utc)
+
+    Scheduler.reschedule_and_notify(deadline)
+
+    mock_update.assert_called_once_with(deadline)
+    mock_send.assert_called_once_with(
+        "✅ FPL reminder re-scheduled for 2026-05-21 15:30 UTC "
+        "(3 hours before the next deadline)."
+    )
+    assert "Rescheduled for: 2026-05-21 15:30:00+00:00" in capsys.readouterr().out
