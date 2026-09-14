@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REQUEST_TIMEOUT = 30
+REMINDER_LEAD_HOURS = 5
 
 def send_telegram_message(message):
     token = os.environ.get('TELEGRAM_TOKEN')
@@ -35,5 +36,8 @@ def send_telegram_message(message):
         sys.exit(1)
 
 if __name__ == "__main__":
-    message = "🚨 FPL Deadline Reminder! 🚨\n\nYou have 3 hours left until the next FPL deadline. Time to do some research! 📖📚⚽"
+    message = (
+        f"🚨 FPL Deadline Reminder! 🚨\n\nYou have {REMINDER_LEAD_HOURS} hours left "
+        "until the next FPL deadline. Time to do some research! 📖📚⚽"
+    )
     send_telegram_message(message)

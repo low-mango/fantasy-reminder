@@ -1,6 +1,6 @@
 # fantasy-reminder
 
-Telegram reminders for Fantasy Premier League deadlines — sent **3 hours before** each gameweek locks.
+Telegram reminders for Fantasy Premier League deadlines — sent **5 hours before** each gameweek locks.
 
 ## How it works
 

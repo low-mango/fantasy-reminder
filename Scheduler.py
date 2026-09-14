@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 import requests
 from dotenv import load_dotenv
 
-from Messenger import send_telegram_message
+from Messenger import REMINDER_LEAD_HOURS, send_telegram_message
 
 load_dotenv()
 
@@ -13,6 +13,9 @@ REQUEST_TIMEOUT = 30
 
 def parse_deadline(gw):
     return datetime.strptime(gw['deadline_time'], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+
+def reminder_time(deadline_dt):
+    return deadline_dt - timedelta(hours=REMINDER_LEAD_HOURS)
 
 def get_next_deadline():
     r = requests.get(
@@ -35,7 +38,7 @@ def get_next_deadline():
     print(f"Start index: {start_idx}")
     for gw in events[start_idx:]:
         deadline_dt = parse_deadline(gw)
-        reminder = deadline_dt - timedelta(hours=3)
+        reminder = reminder_time(deadline_dt)
         if reminder > now:
             print(f"Next deadline: {deadline_dt} ({gw['name']})")
             return deadline_dt
@@ -43,7 +46,7 @@ def get_next_deadline():
     return None
 
 def update_messenger_workflow(deadline_dt):
-    reminder = deadline_dt - timedelta(hours=3)
+    reminder = reminder_time(deadline_dt)
     new_cron = f"{reminder.minute} {reminder.hour} {reminder.day} {reminder.month} *"
     print(f"New cron: {new_cron}")
 
@@ -66,13 +69,13 @@ def update_messenger_workflow(deadline_dt):
 
 
 def reschedule_and_notify(deadline_dt):
-    reminder = deadline_dt - timedelta(hours=3)
+    reminder = reminder_time(deadline_dt)
     update_messenger_workflow(deadline_dt)
     print(f"Rescheduled for: {reminder}")
     when = reminder.strftime("%Y-%m-%d %H:%M UTC")
     send_telegram_message(
         f"✅ FPL reminder re-scheduled for {when} "
-        f"(3 hours before the next deadline)."
+        f"({REMINDER_LEAD_HOURS} hours before the next deadline)."
     )
 
 
