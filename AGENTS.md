@@ -21,6 +21,20 @@ Report the PR URL when done.
 Branch names are short, descriptive, kebab-case, with no prefix — matching the
 existing history: `fix-scheduler`, `notify-rescheduling`, `pip-tools`.
 
+## Pushing
+
+Run `git push` outside the agent sandbox, by requesting elevated permissions for
+that one command. Inside the sandbox, git's network access ignores the
+`github.com-lowmango` host alias in `~/.ssh/config` and authenticates as this
+machine's default GitHub account, which has no write access here, so the push is
+rejected with `Permission to low-mango/fantasy-reminder.git denied`. Reads are
+unaffected — the repo is public, so `git fetch` succeeds with any identity and the
+wrong account only surfaces at push time.
+
+Do not try to fix this by setting `core.sshCommand` to pin the key: overriding
+git's ssh invocation is what breaks sandboxed networking, so it also breaks
+`git fetch` from inside the sandbox.
+
 ## Opening PRs
 
 ```bash
