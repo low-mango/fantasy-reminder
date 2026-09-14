@@ -23,12 +23,12 @@ existing history: `fix-scheduler`, `notify-rescheduling`, `pip-tools`.
 
 ## Opening PRs
 
-Always name the repo and head branch explicitly, so the command works regardless
-of how `origin` is configured in a given clone:
-
 ```bash
-gh pr create --repo low-mango/fantasy-reminder --base main --head <branch> --fill
+gh pr create --base main --title "<summary>" --body "<what changed and why>"
 ```
+
+Write a real body rather than using `--fill`: PRs here are reviewed
+asynchronously, often days later, so the description has to stand on its own.
 
 ## Automated commits
 
