@@ -7,7 +7,9 @@ deadline.
 
 ## Change workflow
 
-Never commit directly to `main`. For every change:
+Never commit directly to `main`. Steps 4 and 5 need an explicit request: unless
+the instructions ask you to commit, push, or open a PR, stop after step 3 and
+report what changed, leaving the work uncommitted in the working tree.
 
 1. `git fetch origin && git switch -c <branch> origin/main` — always branch from
    fresh `origin/main`, never from a stale local `main` (see "Automated commits").
@@ -16,24 +18,22 @@ Never commit directly to `main`. For every change:
 4. Commit and `git push -u origin <branch>`.
 5. Open a PR against `main` (see "Opening PRs").
 
-Report the PR URL when done.
+Report the PR URL whenever you open one.
 
 Branch names are short, descriptive, kebab-case, with no prefix — matching the
 existing history: `fix-scheduler`, `notify-rescheduling`, `pip-tools`.
 
 ## Pushing
 
-Run `git push` outside the agent sandbox, by requesting elevated permissions for
-that one command. Inside the sandbox, git's network access ignores the
-`github.com-lowmango` host alias in `~/.ssh/config` and authenticates as this
-machine's default GitHub account, which has no write access here, so the push is
-rejected with `Permission to low-mango/fantasy-reminder.git denied`. Reads are
-unaffected — the repo is public, so `git fetch` succeeds with any identity and the
-wrong account only surfaces at push time.
+The remote URL uses an SSH host alias, so pushing depends on `~/.ssh/config` being
+applied. A push rejected with `Permission to ... denied` means it authenticated as
+the wrong account; retry it in an environment where that config is honoured. This
+repo is public, so `git fetch` works regardless of identity and the problem only
+ever surfaces at push time.
 
-Do not try to fix this by setting `core.sshCommand` to pin the key: overriding
-git's ssh invocation is what breaks sandboxed networking, so it also breaks
-`git fetch` from inside the sandbox.
+Do not work around it by pinning a key with `core.sshCommand`. Overriding how git
+invokes `ssh` can cut off git's network access in restricted environments, which
+breaks `git fetch` as well.
 
 ## Opening PRs
 
