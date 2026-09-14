@@ -6,9 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REQUEST_TIMEOUT = 30
-
-# Single source of truth for how far ahead of the deadline the reminder lands.
-# Scheduler.py imports this to build the cron and its confirmation message.
 REMINDER_LEAD_HOURS = 5
 
 def send_telegram_message(message):
