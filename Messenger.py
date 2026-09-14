@@ -7,6 +7,10 @@ load_dotenv()
 
 REQUEST_TIMEOUT = 30
 
+# Single source of truth for how far ahead of the deadline the reminder lands.
+# Scheduler.py imports this to build the cron and its confirmation message.
+REMINDER_LEAD_HOURS = 5
+
 def send_telegram_message(message):
     token = os.environ.get('TELEGRAM_TOKEN')
     chat_id = os.environ.get('TELEGRAM_CHAT_ID')
@@ -35,5 +39,8 @@ def send_telegram_message(message):
         sys.exit(1)
 
 if __name__ == "__main__":
-    message = "🚨 FPL Deadline Reminder! 🚨\n\nYou have 3 hours left until the next FPL deadline. Time to do some research! 📖📚⚽"
+    message = (
+        f"🚨 FPL Deadline Reminder! 🚨\n\nYou have {REMINDER_LEAD_HOURS} hours left "
+        "until the next FPL deadline. Time to do some research! 📖📚⚽"
+    )
     send_telegram_message(message)

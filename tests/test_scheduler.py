@@ -14,6 +14,14 @@ def test_parse_deadline():
     assert result == datetime(2026, 5, 21, 18, 30, tzinfo=timezone.utc)
 
 
+def test_reminder_time_precedes_deadline_by_lead_hours():
+    deadline = datetime(2026, 5, 21, 18, 30, tzinfo=timezone.utc)
+
+    result = Scheduler.reminder_time(deadline)
+
+    assert deadline - result == timedelta(hours=Scheduler.REMINDER_LEAD_HOURS)
+
+
 @patch("Scheduler.requests.get")
 def test_get_next_deadline_returns_upcoming_deadline(mock_get, capsys):
     now = datetime(2026, 5, 20, 12, 0, tzinfo=timezone.utc)
@@ -93,7 +101,7 @@ def test_get_next_deadline_all_reminders_passed(mock_get):
 
 def test_update_messenger_workflow_writes_new_cron(capsys):
     deadline = datetime(2026, 5, 21, 15, 0, tzinfo=timezone.utc)
-    reminder = deadline - timedelta(hours=3)
+    reminder = Scheduler.reminder_time(deadline)
     expected_cron = f"{reminder.minute} {reminder.hour} {reminder.day} {reminder.month} *"
     original = "- cron: '0 0 1 1 *' # DYNAMIC_SCHEDULE\nother: line\n"
     mock_file = mock_open(read_data=original)
@@ -121,12 +129,13 @@ def test_update_messenger_workflow_missing_cron_line(capsys):
 @patch("Scheduler.update_messenger_workflow")
 def test_reschedule_and_notify_sends_telegram(mock_update, mock_send, capsys):
     deadline = datetime(2026, 5, 21, 18, 30, tzinfo=timezone.utc)
+    reminder = Scheduler.reminder_time(deadline)
 
     Scheduler.reschedule_and_notify(deadline)
 
     mock_update.assert_called_once_with(deadline)
     mock_send.assert_called_once_with(
-        "✅ FPL reminder re-scheduled for 2026-05-21 15:30 UTC "
-        "(3 hours before the next deadline)."
+        f"✅ FPL reminder re-scheduled for {reminder:%Y-%m-%d %H:%M} UTC "
+        f"({Scheduler.REMINDER_LEAD_HOURS} hours before the next deadline)."
     )
-    assert "Rescheduled for: 2026-05-21 15:30:00+00:00" in capsys.readouterr().out
+    assert f"Rescheduled for: {reminder}" in capsys.readouterr().out
