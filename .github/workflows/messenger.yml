@@ -1,7 +1,7 @@
 name: Telegram Messenger
 on:
   schedule:
-    - cron: '0 5 10 10 *' # DYNAMIC_SCHEDULE (Scheduler will overwrite this)
+    - cron: '0 5 17 10 *' # DYNAMIC_SCHEDULE (Scheduler will overwrite this)
   workflow_dispatch:
 
 jobs:
