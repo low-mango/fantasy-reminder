@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 import requests
 from dotenv import load_dotenv
 
-from Messenger import REMINDER_LEAD_HOURS, send_telegram_message
+from Messenger import REMINDER_LEAD_HOURS, FPL_BOOTSTRAP_URL, send_telegram_message
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ def reminder_time(deadline_dt):
 
 def get_next_deadline():
     r = requests.get(
-        'https://fantasy.premierleague.com/api/bootstrap-static/',
+        FPL_BOOTSTRAP_URL,
         timeout=REQUEST_TIMEOUT,
     )
     r.raise_for_status()
