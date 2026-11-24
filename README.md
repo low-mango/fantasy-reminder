@@ -15,5 +15,8 @@ Add these repository secrets:
 
 - `TELEGRAM_TOKEN` — from the Telegram Bot
 - `TELEGRAM_CHAT_ID` — your chat or group ID
+- `WORKFLOW_PUSH_TOKEN` — classic personal access token the scheduler uses to push cron updates
+
+To update `WORKFLOW_PUSH_TOKEN`: regenerate the classic token (GitHub → **Settings → Developer settings → Personal access tokens → Tokens (classic)**), then replace the value under the repo’s **Settings → Secrets and variables → Actions**.
 
 Enable the workflows under **Actions**. The messenger cron is overwritten automatically after the first run.
